@@ -5,8 +5,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 mvnw
-mvnw.cmd
 .mvn
+mvnw.cmd
 
 ### STS ###
 .apt_generated
