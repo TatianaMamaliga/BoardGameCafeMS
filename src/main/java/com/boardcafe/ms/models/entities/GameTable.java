@@ -23,8 +23,8 @@ public class GameTable {
     private Long id;
     @Column
     private Integer capacity;
-    @Column
-    private String status;
+//    @Column
+//    private GameTableStatus status;
 
     @OneToMany(mappedBy = "gameTable")
     private List<Reservation> reservations = new ArrayList<>();

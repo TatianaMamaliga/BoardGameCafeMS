@@ -30,11 +30,11 @@ public class Event {
     private LocalDate date;
     @Column
     private LocalTime startTime;
-    @Column(columnDefinition = "interval")
-    private Duration duration;
+    @Column
+    private LocalTime endTime;
     @Column
     private Integer capacity;
 
     @OneToMany(mappedBy = "event")
-    private Set<Reservation> reservationList = new HashSet<>();
+    private Set<Reservation> reservations = new HashSet<>();
 }

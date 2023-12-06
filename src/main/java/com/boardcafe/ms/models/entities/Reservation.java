@@ -26,9 +26,9 @@ public class Reservation {
     @Column
     private LocalDate date;
     @Column
-    private LocalTime time;
-    @Column(columnDefinition = "interval")
-    private Duration duration;
+    private LocalTime startTime;
+    @Column
+    private LocalTime endTime;
     @Column
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
