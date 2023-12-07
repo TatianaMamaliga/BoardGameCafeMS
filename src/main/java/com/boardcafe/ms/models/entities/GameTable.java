@@ -23,8 +23,9 @@ public class GameTable {
     private Long id;
     @Column
     private Integer capacity;
-//    @Column
-//    private GameTableStatus status;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private GameTableStatus status;
 
     @OneToMany(mappedBy = "gameTable")
     private List<Reservation> reservations = new ArrayList<>();

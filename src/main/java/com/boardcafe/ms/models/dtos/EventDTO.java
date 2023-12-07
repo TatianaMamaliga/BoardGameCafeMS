@@ -1,8 +1,7 @@
 package com.boardcafe.ms.models.dtos;
 
 import com.boardcafe.ms.models.entities.Reservation;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -16,15 +15,23 @@ import java.util.Set;
 public class EventDTO implements Serializable {
     private Long id;
 
+    @NotNull(message = "Title cannot be null")
+    @Size(min = 1, max = 100, message = "Title must be between 1 and 100 characters")
     private String title;
 
+    @NotNull(message = "Date cannot be null")
+    @Future(message = "Date must be in the future")
     private LocalDate date;
 
+    @NotNull(message = "Start time cannot be null")
     private LocalTime startTime;
 
+    @NotNull(message = "End time cannot be null")
     private LocalTime endTime;
 
+    @NotNull(message = "Capacity cannot be null")
+    @Min(value = 1, message = "Capacity must be at least 1")
     private Integer capacity;
 
-    private Set<Reservation> reservations;
+    private Set<ReservationDTO> reservations;
 }
