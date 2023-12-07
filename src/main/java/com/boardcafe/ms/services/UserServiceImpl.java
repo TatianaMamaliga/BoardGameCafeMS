@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,25 @@ public class UserServiceImpl implements UserService {
         User userEntity = objectMapper.convertValue(userDTO, User.class);
         User savedUserEntity = userRepository.save(userEntity);
         UserDTO userDTOResponse = objectMapper.convertValue(savedUserEntity, UserDTO.class);
+        return userDTOResponse;
+    }
+
+    @Override
+    public List<UserDTO> getAllUsers() {
+        List<User> allUsers = userRepository.findAll();
+        if (allUsers.isEmpty()) {
+            throw new EntityNotFoundException("Oops. There are no users in the database.");
+        }
+        return allUsers.stream()
+                .map(user -> objectMapper.convertValue(user, UserDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDTO getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        UserDTO userDTOResponse = objectMapper.convertValue(user, UserDTO.class);
         return userDTOResponse;
     }
 
