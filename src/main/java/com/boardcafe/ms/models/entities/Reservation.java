@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +37,10 @@ public class Reservation {
     private ReservationStatus status;
     @Column
     private Integer attendees;
+    @Column
+    private LocalDateTime createdAt;
+    @Column
+    private LocalDateTime modifiedAt;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
