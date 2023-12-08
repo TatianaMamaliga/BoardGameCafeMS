@@ -9,6 +9,7 @@ import com.boardcafe.ms.repositories.GameTableRepository;
 import com.boardcafe.ms.repositories.ReservationRepository;
 import com.boardcafe.ms.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,16 +28,17 @@ public class ReservationServiceImpl implements ReservationService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public ReservationDTO createReservation(ReservationDTO reservationDTO, ReservationStatusDTO reservationStatusDTO) {
+    @Transactional
+    public ReservationDTO createReservation(ReservationDTO reservationDTO) {
+        reservationDTO.setReservationStatus(ReservationStatusDTO.NEW);
         Reservation reservationEntity = objectMapper.convertValue(reservationDTO, Reservation.class);
-        ReservationStatus reservationStatus = objectMapper.convertValue(reservationStatusDTO, ReservationStatus.class);
-        reservationEntity.setStatus(reservationStatus);
+        reservationEntity.setStatus(ReservationStatus.NEW);
 
         Event event = eventRepository.findById(reservationDTO.getEventId())
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with given id"));
         GameTable gameTable = gameTableRepository.findById(reservationDTO.getGameTableId())
                 .orElseThrow(() -> new EntityNotFoundException("Game table not found with given id"));
-        User user = userRepository.findById(reservationDTO.getGameTableId())
+        User user = userRepository.findById(reservationDTO.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with given id"));
 
         reservationEntity.setEvent(event);
@@ -45,6 +47,11 @@ public class ReservationServiceImpl implements ReservationService {
 
         Reservation savedReservation = reservationRepository.save(reservationEntity);
         ReservationDTO reservationDTOResponse = objectMapper.convertValue(savedReservation, ReservationDTO.class);
+
+        reservationDTOResponse.setReservationStatus(ReservationStatusDTO.NEW);
+        reservationDTOResponse.setEventId(event.getId());
+        reservationDTOResponse.setGameTableId(gameTable.getId());
+        reservationDTOResponse.setUserId(user.getId());
         return reservationDTOResponse;
     }
 

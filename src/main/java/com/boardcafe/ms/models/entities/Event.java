@@ -35,6 +35,6 @@ public class Event {
     @Column
     private Integer capacity;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private Set<Reservation> reservations = new HashSet<>();
 }
