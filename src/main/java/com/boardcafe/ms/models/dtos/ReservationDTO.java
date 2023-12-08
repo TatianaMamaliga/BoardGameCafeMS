@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -40,4 +41,7 @@ public class ReservationDTO implements Serializable {
     private Long gameTableId;
     @NotNull(message = "User ID cannot be null")
     private Long userId;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 }
