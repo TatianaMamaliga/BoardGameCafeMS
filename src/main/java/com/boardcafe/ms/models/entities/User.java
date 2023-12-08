@@ -25,6 +25,10 @@ public class User {
     private String name;
     @Column(name = "birth_date")
     private LocalDate birthDate;
+    @Column
+    private String email;
+    @Column
+    private String phoneNumber;
 
     @ManyToMany
     @JoinTable(

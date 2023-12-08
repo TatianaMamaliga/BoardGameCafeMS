@@ -1,5 +1,6 @@
 package com.boardcafe.ms.models.dtos;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -13,12 +14,15 @@ import java.util.List;
 @Validated
 public class UserDTO implements Serializable {
     private Long id;
-
     @NotNull(message = "Name cannot be null")
     @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters")
     private String name;
     @NotNull(message = "Birth date cannot be null")
     private LocalDate birthDate;
+    @NotNull(message = "Email cannot be null")
+    private String email;
+    @NotNull(message = "Phone number cannot be null")
+    private String phoneNumber;
     private List<GameDTO> gameDTOS;
     private List<ReservationDTO> reservationDTOS;
 }
