@@ -1,5 +1,7 @@
 package com.boardcafe.ms.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -32,16 +34,21 @@ public class Reservation {
     @Column
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
+    @Column
+    private Integer attendees;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
+    @JsonBackReference
     private Event event;
 
     @ManyToOne
     @JoinColumn(name = "table_id")
+    @JsonIgnore
     private GameTable gameTable;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 }

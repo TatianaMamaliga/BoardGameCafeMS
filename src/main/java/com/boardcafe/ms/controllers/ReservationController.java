@@ -16,9 +16,9 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @PostMapping("/{status}")
-    public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO, @PathVariable ReservationStatusDTO status) {
-        return ResponseEntity.ok(reservationService.createReservation(reservationDTO, status));
+    @PostMapping
+    public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
+        return ResponseEntity.ok(reservationService.createReservation(reservationDTO));
     }
 
 }

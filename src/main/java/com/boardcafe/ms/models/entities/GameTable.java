@@ -27,7 +27,7 @@ public class GameTable {
     @Enumerated(EnumType.STRING)
     private GameTableStatus status;
 
-    @OneToMany(mappedBy = "gameTable")
+    @OneToMany(mappedBy = "gameTable", fetch = FetchType.LAZY)
     private List<Reservation> reservations = new ArrayList<>();
 
     @ManyToMany

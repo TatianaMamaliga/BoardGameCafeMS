@@ -28,7 +28,7 @@ public class ReservationDTO implements Serializable {
     private LocalTime endTime;
 
     @Enumerated(EnumType.STRING)
-    private ReservationStatusDTO gameTableStatusDTO;
+    private ReservationStatusDTO reservationStatus;
 
     @NotNull(message = "Number of attendees cannot be null")
     @Min(value = 0, message = "Number of attendees cannot be negative")
