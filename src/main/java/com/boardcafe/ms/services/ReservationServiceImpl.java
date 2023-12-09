@@ -132,7 +132,7 @@ public class ReservationServiceImpl implements ReservationService {
         reservationRepository.delete(reservationEntity);
     }
 
-    private ReservationDTO convertToDTO(Reservation reservation) {
+    public ReservationDTO convertToDTO(Reservation reservation) {
         ReservationDTO reservationDTO = objectMapper.convertValue(reservation, ReservationDTO.class);
         ReservationStatus reservationStatus = reservation.getStatus();
         ReservationStatusDTO reservationStatusDTO = objectMapper.convertValue(reservationStatus, ReservationStatusDTO.class);
