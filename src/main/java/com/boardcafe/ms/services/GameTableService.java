@@ -1,7 +1,7 @@
 package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.models.dtos.GameTableDTO;
-import com.boardcafe.ms.models.dtos.ReservationDTO;
+import com.boardcafe.ms.models.dtos.EventReservationDTO;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public interface GameTableService {
 
     List<GameTableDTO> getAllGameTables();
 
-    List<ReservationDTO> getReservationsByTableId(Long tableId);
+    List<EventReservationDTO> getReservationsByTableId(Long tableId);
 
     void deleteTableById(Long id);
 }

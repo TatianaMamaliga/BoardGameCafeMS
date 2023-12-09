@@ -1,6 +1,5 @@
 package com.boardcafe.ms.models.dtos;
 
-import com.boardcafe.ms.models.entities.Reservation;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
@@ -33,5 +32,5 @@ public class EventDTO implements Serializable {
     @Min(value = 1, message = "Capacity must be at least 1")
     private Integer capacity;
 
-    private Set<ReservationDTO> reservations;
+    private Set<EventReservationDTO> reservations;
 }

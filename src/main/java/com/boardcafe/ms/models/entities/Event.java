@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
@@ -36,5 +35,5 @@ public class Event {
     private Integer capacity;
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    private Set<Reservation> reservations = new HashSet<>();
+    private Set<EventReservation> eventReservations = new HashSet<>();
 }

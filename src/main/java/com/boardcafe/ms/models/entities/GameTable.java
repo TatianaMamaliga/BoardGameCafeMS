@@ -1,5 +1,6 @@
 package com.boardcafe.ms.models.entities;
 
+import com.boardcafe.ms.models.entities.enums.GameTableStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class GameTable {
     private GameTableStatus status;
 
     @OneToMany(mappedBy = "gameTable", fetch = FetchType.LAZY)
-    private List<Reservation> reservations = new ArrayList<>();
+    private List<EventReservation> eventReservations = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(

@@ -39,5 +39,5 @@ public class User {
     private Set<Game> games = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<Reservation> reservations = new HashSet<>();
+    private Set<EventReservation> eventReservations = new HashSet<>();
 }

@@ -1,9 +1,12 @@
 package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
-import com.boardcafe.ms.models.dtos.ReservationDTO;
-import com.boardcafe.ms.models.dtos.ReservationStatusDTO;
+import com.boardcafe.ms.models.dtos.EventDTO;
+import com.boardcafe.ms.models.dtos.EventReservationDTO;
+import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
+import com.boardcafe.ms.models.dtos.enums.ReservationTypeDTO;
 import com.boardcafe.ms.models.entities.*;
+import com.boardcafe.ms.models.entities.enums.ReservationStatus;
 import com.boardcafe.ms.repositories.EventRepository;
 import com.boardcafe.ms.repositories.GameTableRepository;
 import com.boardcafe.ms.repositories.ReservationRepository;
@@ -17,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,76 +34,109 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional
-    public ReservationDTO createReservation(ReservationDTO reservationDTO) {
-        reservationDTO.setReservationStatus(ReservationStatusDTO.NEW);
-        Reservation reservationEntity = objectMapper.convertValue(reservationDTO, Reservation.class);
-        reservationEntity.setStatus(ReservationStatus.NEW);
-        reservationEntity.setCreatedAt(LocalDateTime.now());
-        reservationEntity.setModifiedAt(LocalDateTime.now());
+    public EventReservationDTO createReservation(EventReservationDTO eventReservationDTO) {
+        eventReservationDTO.setReservationStatus(ReservationStatusDTO.NEW);
+        eventReservationDTO.setReservationType(ReservationTypeDTO.EVENT);
 
-        Event event = eventRepository.findById(reservationDTO.getEventId())
+        EventReservation eventReservationEntity = objectMapper.convertValue(eventReservationDTO, EventReservation.class);
+        eventReservationEntity.setStatus(ReservationStatus.NEW);
+        eventReservationEntity.setCreatedAt(LocalDateTime.now());
+        eventReservationEntity.setModifiedAt(LocalDateTime.now());
+
+        Event event = eventRepository.findById(eventReservationDTO.getEventId())
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with given id"));
-        GameTable gameTable = gameTableRepository.findById(reservationDTO.getGameTableId())
+        GameTable gameTable = gameTableRepository.findById(eventReservationDTO.getGameTableId())
                 .orElseThrow(() -> new EntityNotFoundException("Game table not found with given id"));
-        User user = userRepository.findById(reservationDTO.getUserId())
+        User user = userRepository.findById(eventReservationDTO.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with given id"));
 
-        reservationEntity.setEvent(event);
-        reservationEntity.setGameTable(gameTable);
-        reservationEntity.setUser(user);
+        eventReservationEntity.setEvent(event);
+        eventReservationEntity.setGameTable(gameTable);
+        eventReservationEntity.setUser(user);
 
-        Reservation savedReservation = reservationRepository.save(reservationEntity);
-        ReservationDTO reservationDTOResponse = objectMapper.convertValue(savedReservation, ReservationDTO.class);
+        EventReservation savedEventReservation = reservationRepository.save(eventReservationEntity);
+        EventReservationDTO eventReservationDTOResponse = objectMapper.convertValue(savedEventReservation, EventReservationDTO.class);
 
-        reservationDTOResponse.setReservationStatus(ReservationStatusDTO.NEW);
-        reservationDTOResponse.setEventId(event.getId());
-        reservationDTOResponse.setGameTableId(gameTable.getId());
-        reservationDTOResponse.setUserId(user.getId());
-        reservationDTOResponse.setCreatedAt(LocalDateTime.now());
-        reservationDTOResponse.setModifiedAt(LocalDateTime.now());
-        return reservationDTOResponse;
+        eventReservationDTOResponse.setReservationStatus(ReservationStatusDTO.NEW);
+        eventReservationDTO.setReservationType(ReservationTypeDTO.EVENT);
+        eventReservationDTOResponse.setEventId(event.getId());
+        eventReservationDTOResponse.setGameTableId(gameTable.getId());
+        eventReservationDTOResponse.setUserId(user.getId());
+        eventReservationDTOResponse.setCreatedAt(LocalDateTime.now());
+        eventReservationDTOResponse.setModifiedAt(LocalDateTime.now());
+        return eventReservationDTOResponse;
     }
 
     @Override
-    public ReservationDTO getReservationById(Long id) {
-        Reservation reservationEntity = reservationRepository.findById(id)
+    public EventReservationDTO createReservationSpecialEvent(EventReservationDTO eventReservationDTO, Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found with given id: " + eventId));
+        EventDTO eventDTO = objectMapper.convertValue(event, EventDTO.class);
+
+        eventReservationDTO.setReservationStatus(ReservationStatusDTO.NEW);
+        eventReservationDTO.setDate(eventDTO.getDate());
+        eventReservationDTO.setStartTime(eventDTO.getStartTime());
+        eventReservationDTO.setEndTime(eventDTO.getEndTime());
+        eventReservationDTO.setEventId(eventId);
+
+        eventReservationDTO.setCreatedAt(LocalDateTime.now());
+        eventReservationDTO.setModifiedAt(LocalDateTime.now());
+
+        Long userId = eventReservationDTO.getUserId();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with given id: " + userId));
+        GameTable gameTable = gameTableRepository.findById(eventReservationDTO.getGameTableId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found with given id: " + userId));
+        EventReservation eventReservationEntity = objectMapper.convertValue(eventReservationDTO, EventReservation.class);
+        eventReservationEntity.setEvent(event);
+        eventReservationEntity.setUser(user);
+        eventReservationEntity.setGameTable(gameTable);
+        EventReservationDTO eventReservationDTOResponse = convertToDTO(eventReservationEntity);
+
+        return eventReservationDTOResponse;
+    }
+
+
+    @Override
+    public EventReservationDTO getReservationById(Long id) {
+        EventReservation eventReservationEntity = reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found with id: " + id));
 
-        return convertToDTO(reservationEntity);
+        return convertToDTO(eventReservationEntity);
     }
 
     @Override
     public void cancelReservation(Long id) {
-        Reservation reservation = reservationRepository.findById(id)
+        EventReservation eventReservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found with id: " + id));
-        reservation.setModifiedAt(LocalDateTime.now());
-        if (reservation.getStatus().equals(ReservationStatus.CANCELED)) {
+        eventReservation.setModifiedAt(LocalDateTime.now());
+        if (eventReservation.getStatus().equals(ReservationStatus.CANCELED)) {
             throw new IllegalStateException("Reservation is already canceled");
         }
-        reservation.setStatus(ReservationStatus.CANCELED);
-        reservationRepository.save(reservation);
+        eventReservation.setStatus(ReservationStatus.CANCELED);
+        reservationRepository.save(eventReservation);
     }
 
     @Override
     public void changeReservationStatus(Long id, String status) {
-        Reservation reservation = reservationRepository.findById(id)
+        EventReservation eventReservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found with id: " + id));
-        reservation.setModifiedAt(LocalDateTime.now());
+        eventReservation.setModifiedAt(LocalDateTime.now());
 
         switch (status) {
             case "confirm":
-                if (reservation.getStatus().equals(ReservationStatus.CONFIRMED)) {
+                if (eventReservation.getStatus().equals(ReservationStatus.CONFIRMED)) {
                     throw new IllegalStateException("Reservation is already confirmed");
                 }
-                reservation.setStatus(ReservationStatus.CONFIRMED);
-                reservationRepository.save(reservation);
+                eventReservation.setStatus(ReservationStatus.CONFIRMED);
+                reservationRepository.save(eventReservation);
                 break;
             case "complete":
-                if (reservation.getStatus().equals(ReservationStatus.COMPLETED)) {
+                if (eventReservation.getStatus().equals(ReservationStatus.COMPLETED)) {
                     throw new IllegalStateException("Reservation is already completed");
                 }
-                reservation.setStatus(ReservationStatus.COMPLETED);
-                reservationRepository.save(reservation);
+                eventReservation.setStatus(ReservationStatus.COMPLETED);
+                reservationRepository.save(eventReservation);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid status: " + status);
@@ -110,42 +145,42 @@ public class ReservationServiceImpl implements ReservationService {
 
 
     @Override
-    public List<ReservationDTO> getAllReservations() {
-        List<Reservation> allReservations = reservationRepository.findAll();
-        List<ReservationDTO> allReservationsDTO = new ArrayList<>();
+    public List<EventReservationDTO> getAllReservations() {
+        List<EventReservation> allEventReservations = reservationRepository.findAll();
+        List<EventReservationDTO> allReservationsDTO = new ArrayList<>();
 
-        if (allReservations.isEmpty()) {
+        if (allEventReservations.isEmpty()) {
             throw new EntityNotFoundException("Oops. There are no reservations here.");
         }
 
-        for (Reservation reservation : allReservations) {
-            ReservationDTO reservationDTO = convertToDTO(reservation);
-            allReservationsDTO.add(reservationDTO);
+        for (EventReservation eventReservation : allEventReservations) {
+            EventReservationDTO eventReservationDTO = convertToDTO(eventReservation);
+            allReservationsDTO.add(eventReservationDTO);
         }
         return allReservationsDTO;
     }
 
     @Override
     public void deleteReservationById(Long id) {
-        Reservation reservationEntity = reservationRepository.findById(id)
+        EventReservation eventReservationEntity = reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found with id: " + id));
-        reservationRepository.delete(reservationEntity);
+        reservationRepository.delete(eventReservationEntity);
     }
 
-    public ReservationDTO convertToDTO(Reservation reservation) {
-        ReservationDTO reservationDTO = objectMapper.convertValue(reservation, ReservationDTO.class);
-        ReservationStatus reservationStatus = reservation.getStatus();
+    public EventReservationDTO convertToDTO(EventReservation eventReservation) {
+        EventReservationDTO eventReservationDTO = objectMapper.convertValue(eventReservation, EventReservationDTO.class);
+        ReservationStatus reservationStatus = eventReservation.getStatus();
         ReservationStatusDTO reservationStatusDTO = objectMapper.convertValue(reservationStatus, ReservationStatusDTO.class);
 
-        Long eventId = reservation.getEvent().getId();
-        Long gameTableId = reservation.getGameTable().getId();
-        Long userId = reservation.getUser().getId();
+        Long eventId = eventReservation.getEvent().getId();
+        Long gameTableId = eventReservation.getGameTable().getId();
+        Long userId = eventReservation.getUser().getId();
 
-        reservationDTO.setReservationStatus(reservationStatusDTO);
-        reservationDTO.setEventId(eventId);
-        reservationDTO.setGameTableId(gameTableId);
-        reservationDTO.setUserId(userId);
+        eventReservationDTO.setReservationStatus(reservationStatusDTO);
+        eventReservationDTO.setEventId(eventId);
+        eventReservationDTO.setGameTableId(gameTableId);
+        eventReservationDTO.setUserId(userId);
 
-        return reservationDTO;
+        return eventReservationDTO;
     }
 }

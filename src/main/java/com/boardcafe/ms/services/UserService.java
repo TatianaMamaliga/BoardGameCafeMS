@@ -1,6 +1,6 @@
 package com.boardcafe.ms.services;
 
-import com.boardcafe.ms.models.dtos.ReservationDTO;
+import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.dtos.UserDTO;
 
 import java.util.List;
@@ -14,5 +14,5 @@ public interface UserService {
 
     void deleteUserById(Long id);
 
-    List<ReservationDTO> getReservationsByUserId(Long id);
+    List<EventReservationDTO> getReservationsByUserId(Long id);
 }

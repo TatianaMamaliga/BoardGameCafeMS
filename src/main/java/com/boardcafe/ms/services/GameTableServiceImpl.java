@@ -2,9 +2,9 @@ package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
 import com.boardcafe.ms.models.dtos.GameTableDTO;
-import com.boardcafe.ms.models.dtos.ReservationDTO;
+import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.entities.GameTable;
-import com.boardcafe.ms.models.entities.GameTableStatus;
+import com.boardcafe.ms.models.entities.enums.GameTableStatus;
 import com.boardcafe.ms.repositories.GameTableRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +52,7 @@ public class GameTableServiceImpl implements GameTableService {
     }
 
     @Override
-    public List<ReservationDTO> getReservationsByTableId(Long tableId) {
+    public List<EventReservationDTO> getReservationsByTableId(Long tableId) {
         return null;
     }
 

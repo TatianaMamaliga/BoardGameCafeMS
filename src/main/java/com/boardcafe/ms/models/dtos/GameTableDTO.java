@@ -1,5 +1,6 @@
 package com.boardcafe.ms.models.dtos;
 
+import com.boardcafe.ms.models.dtos.enums.GameTableStatusDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,6 @@ public class GameTableDTO implements Serializable {
     @NotNull
     private Integer capacity;
     private GameTableStatusDTO status;
-    private List<ReservationDTO> reservations;
+    private List<EventReservationDTO> reservations;
     private List<GameDTO> games;
 }
