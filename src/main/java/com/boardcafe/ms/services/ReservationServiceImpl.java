@@ -98,7 +98,7 @@ public class ReservationServiceImpl implements ReservationService {
                 break;
             case "complete":
                 if (reservation.getStatus().equals(ReservationStatus.COMPLETED)) {
-                    throw new IllegalStateException("Reservation is already confirmed");
+                    throw new IllegalStateException("Reservation is already completed");
                 }
                 reservation.setStatus(ReservationStatus.COMPLETED);
                 reservationRepository.save(reservation);
