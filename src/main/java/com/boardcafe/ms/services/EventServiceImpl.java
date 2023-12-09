@@ -2,7 +2,10 @@ package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
 import com.boardcafe.ms.models.dtos.EventDTO;
+import com.boardcafe.ms.models.dtos.ReservationDTO;
 import com.boardcafe.ms.models.entities.Event;
+import com.boardcafe.ms.models.entities.Reservation;
+import com.boardcafe.ms.models.entities.ReservationStatus;
 import com.boardcafe.ms.repositories.EventRepository;
 import com.boardcafe.ms.repositories.ReservationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +28,8 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final ReservationRepository reservationRepository;
     private final ObjectMapper objectMapper;
+    //    private final ReservationService reservationService;
+    private final ReservationServiceImpl reservationService;
 
     @Override
     public EventDTO createEvent(EventDTO eventDTO) {
@@ -36,7 +43,11 @@ public class EventServiceImpl implements EventService {
     public EventDTO getEventById(Long id) {
         Event eventEntity = eventRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with the given ID: " + id));
+
+        Set<ReservationDTO> reservationDTOSet = getReservationDTOs(eventEntity.getReservations());
+
         EventDTO eventDTO = objectMapper.convertValue(eventEntity, EventDTO.class);
+        eventDTO.setReservations(reservationDTOSet);
         return eventDTO;
     }
 
@@ -45,7 +56,9 @@ public class EventServiceImpl implements EventService {
         List<EventDTO> allEventsDTO = new ArrayList<>();
         List<Event> allEvents = eventRepository.findAll();
         for (Event event : allEvents) {
+            Set<ReservationDTO> reservationDTOSet = getReservationDTOs(event.getReservations());
             EventDTO eventDTO = objectMapper.convertValue(event, EventDTO.class);
+            eventDTO.setReservations(reservationDTOSet);
             allEventsDTO.add(eventDTO);
         }
         return allEventsDTO;
@@ -66,4 +79,15 @@ public class EventServiceImpl implements EventService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage(), exception);
         }
     }
+
+    private Set<ReservationDTO> getReservationDTOs(Set<Reservation> reservations) {
+        Set<ReservationDTO> reservationDTOSet = new HashSet<>();
+        for (Reservation reservation : reservations) {
+            ReservationDTO reservationDTO = reservationService.convertToDTO(reservation);
+            reservationDTOSet.add(reservationDTO);
+        }
+        return reservationDTOSet;
+    }
+
+
 }
