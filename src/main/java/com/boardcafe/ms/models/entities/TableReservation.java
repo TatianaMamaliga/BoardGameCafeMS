@@ -21,9 +21,12 @@ public class TableReservation extends Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private Integer attendees;
+
     @Builder
-    public TableReservation(LocalDate date, LocalTime startTime, LocalTime endTime, ReservationStatus status, Integer attendees, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-        super(date, startTime, endTime, status, attendees, createdAt, modifiedAt);
+    public TableReservation(LocalDate date, LocalTime startTime, LocalTime endTime, ReservationStatus status, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        super(date, startTime, endTime, status, createdAt, modifiedAt);
     }
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -15,28 +15,28 @@ public class TableReservationConverter {
     private TableReservationConverter() {
     }
 
-    public TableReservationDTO EntityToDTO(TableReservation tableReservation) {
-        TableReservationDTO tableReservationDTO = new TableReservationDTO();
-        tableReservationDTO.setId(tableReservation.getId());
-        tableReservationDTO.setDate(tableReservation.getDate());
-        tableReservationDTO.setStartTime(tableReservation.getStartTime());
-        tableReservationDTO.setEndTime(tableReservation.getEndTime());
-        tableReservationDTO.setAttendees(tableReservation.getAttendees());
-        tableReservationDTO.setGameTableId(tableReservation.getGameTable().getId());
-        tableReservationDTO.setReservationStatus(objectMapper.convertValue(tableReservation.getStatus(), ReservationStatusDTO.class));
-        tableReservationDTO.setCreatedAt(tableReservation.getCreatedAt());
-        tableReservationDTO.setModifiedAt(tableReservation.getModifiedAt());
-        User user = tableReservation.getUser();
-        tableReservationDTO.setUserId(user.getId());
-        return tableReservationDTO;
+    public TableReservationDTO EntityToDTO(TableReservation reservation) {
+        TableReservationDTO reservationDTO = new TableReservationDTO();
+        reservationDTO.setId(reservation.getId());
+        reservationDTO.setDate(reservation.getDate());
+        reservationDTO.setStartTime(reservation.getStartTime());
+        reservationDTO.setEndTime(reservation.getEndTime());
+        reservationDTO.setAttendees(reservation.getAttendees());
+        reservationDTO.setGameTableId(reservation.getGameTable().getId());
+        reservationDTO.setReservationStatus(objectMapper.convertValue(reservation.getStatus(), ReservationStatusDTO.class));
+        reservationDTO.setCreatedAt(reservation.getCreatedAt());
+        reservationDTO.setModifiedAt(reservation.getModifiedAt());
+        User user = reservation.getUser();
+        reservationDTO.setUserId(user.getId());
+        return reservationDTO;
     }
 
-    public static TableReservation DTOToEntity(TableReservationDTO tableReservationDTO) {
-        TableReservation tableReservation = new TableReservation();
-        tableReservation.setDate(tableReservationDTO.getDate());
-        tableReservation.setStartTime(tableReservationDTO.getStartTime());
-        tableReservation.setEndTime(tableReservationDTO.getEndTime());
-        tableReservation.setAttendees(tableReservationDTO.getAttendees());
-        return tableReservation;
+    public static TableReservation DTOToEntity(TableReservationDTO reservationDTO) {
+        TableReservation reservation = new TableReservation();
+        reservation.setDate(reservationDTO.getDate());
+        reservation.setStartTime(reservationDTO.getStartTime());
+        reservation.setEndTime(reservationDTO.getEndTime());
+        reservation.setAttendees(reservationDTO.getAttendees());
+        return reservation;
     }
 }

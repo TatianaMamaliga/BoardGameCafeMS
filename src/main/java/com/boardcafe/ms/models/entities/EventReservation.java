@@ -24,19 +24,14 @@ public class EventReservation extends Reservation {
     private Long id;
 
     @Builder
-    public EventReservation(LocalDate date, LocalTime startTime, LocalTime endTime, ReservationStatus status, Integer attendees, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-        super(date, startTime, endTime, status, attendees, createdAt, modifiedAt);
+    public EventReservation(LocalDate date, LocalTime startTime, LocalTime endTime, ReservationStatus status, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        super(date, startTime, endTime, status, createdAt, modifiedAt);
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
     @JsonBackReference
     private Event event;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_id")
-    @JsonIgnore
-    private GameTable gameTable;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -27,8 +27,6 @@ public abstract class Reservation {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
     @Column
-    private Integer attendees;
-    @Column
     private LocalDateTime createdAt;
     @Column
     private LocalDateTime modifiedAt;
