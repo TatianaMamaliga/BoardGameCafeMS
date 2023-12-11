@@ -6,7 +6,7 @@ import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.entities.Event;
 import com.boardcafe.ms.models.entities.EventReservation;
 import com.boardcafe.ms.repositories.EventRepository;
-import com.boardcafe.ms.repositories.ReservationRepository;
+import com.boardcafe.ms.repositories.EventReservationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +25,10 @@ import java.util.Set;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
-    private final ReservationRepository reservationRepository;
+    private final EventReservationRepository eventReservationRepository;
     private final ObjectMapper objectMapper;
     //    private final ReservationService reservationService;
-    private final ReservationServiceImpl reservationService;
+    private final EventReservationServiceImpl reservationService;
 
     @Override
     public EventDTO createEvent(EventDTO eventDTO) {
@@ -82,11 +82,9 @@ public class EventServiceImpl implements EventService {
     private Set<EventReservationDTO> getReservationDTOs(Set<EventReservation> eventReservations) {
         Set<EventReservationDTO> eventReservationDTOSet = new HashSet<>();
         for (EventReservation eventReservation : eventReservations) {
-            EventReservationDTO eventReservationDTO = reservationService.convertToDTO(eventReservation);
+            EventReservationDTO eventReservationDTO = objectMapper.convertValue(eventReservation, EventReservationDTO.class);
             eventReservationDTOSet.add(eventReservationDTO);
         }
         return eventReservationDTOSet;
     }
-
-
 }

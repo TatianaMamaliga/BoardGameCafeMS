@@ -4,10 +4,8 @@ import com.boardcafe.ms.models.dtos.EventReservationDTO;
 
 import java.util.List;
 
-public interface ReservationService {
-    EventReservationDTO createReservation(EventReservationDTO eventReservationDTO);
-
-    EventReservationDTO createReservationSpecialEvent(EventReservationDTO eventReservationDTO, Long eventId);
+public interface EventReservationService {
+    EventReservationDTO createReservation(EventReservationDTO eventReservationDTO, Long eventId);
 
     EventReservationDTO getReservationById(Long id);
 
