@@ -29,3 +29,7 @@ events.
 > * spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 > * logging.level.org.hibernate.SQL=DEBUG
 > * logging.level.org.hibernate.type.descriptor.sql=TRACE
+
+#### Swagger UI
+
+> Link: http://localhost:8080/swagger-ui/index.html#/
