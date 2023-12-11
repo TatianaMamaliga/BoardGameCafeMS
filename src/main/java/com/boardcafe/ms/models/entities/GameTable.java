@@ -1,5 +1,6 @@
 package com.boardcafe.ms.models.entities;
 
+import com.boardcafe.ms.models.dtos.TableReservationDTO;
 import com.boardcafe.ms.models.entities.enums.GameTableStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,9 +29,11 @@ public class GameTable {
     @Column
     @Enumerated(EnumType.STRING)
     private GameTableStatus status;
+    @Embedded
+    private TimeSlot timeSlot;
 
     @OneToMany(mappedBy = "gameTable", fetch = FetchType.LAZY)
-    private List<EventReservation> eventReservations = new ArrayList<>();
+    private List<TableReservation> tableReservations = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
