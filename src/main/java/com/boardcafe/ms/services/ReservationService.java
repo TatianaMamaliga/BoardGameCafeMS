@@ -1,19 +1,21 @@
 package com.boardcafe.ms.services;
 
-import com.boardcafe.ms.models.dtos.ReservationDTO;
+import com.boardcafe.ms.models.dtos.EventReservationDTO;
 
 import java.util.List;
 
 public interface ReservationService {
-    ReservationDTO createReservation(ReservationDTO reservationDTO);
+    EventReservationDTO createReservation(EventReservationDTO eventReservationDTO);
 
-    ReservationDTO getReservationById(Long id);
+    EventReservationDTO createReservationSpecialEvent(EventReservationDTO eventReservationDTO, Long eventId);
+
+    EventReservationDTO getReservationById(Long id);
 
     void cancelReservation(Long id);
 
     void changeReservationStatus(Long id, String status);
 
-    List<ReservationDTO> getAllReservations();
+    List<EventReservationDTO> getAllReservations();
 
     void deleteReservationById(Long id);
 }

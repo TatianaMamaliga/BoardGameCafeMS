@@ -1,6 +1,6 @@
 package com.boardcafe.ms.controllers;
 
-import com.boardcafe.ms.models.dtos.ReservationDTO;
+import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.services.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,17 +18,17 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
-        return ResponseEntity.ok(reservationService.createReservation(reservationDTO));
+    public ResponseEntity<EventReservationDTO> createReservation(@RequestBody EventReservationDTO eventReservationDTO) {
+        return ResponseEntity.ok(reservationService.createReservation(eventReservationDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ReservationDTO> getReservationById(@PathVariable long id) {
+    @GetMapping("{id}")
+    public ResponseEntity<EventReservationDTO> getReservationById(@PathVariable long id) {
         return ResponseEntity.ok(reservationService.getReservationById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservationDTO>> getAllReservations() {
+    public ResponseEntity<List<EventReservationDTO>> getAllReservations() {
         return ResponseEntity.ok(reservationService.getAllReservations());
     }
 

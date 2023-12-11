@@ -1,7 +1,7 @@
 package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
-import com.boardcafe.ms.models.dtos.ReservationDTO;
+import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.dtos.UserDTO;
 import com.boardcafe.ms.models.entities.User;
 import com.boardcafe.ms.repositories.UserRepository;
@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,7 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ReservationDTO> getReservationsByUserId(Long id) {
+    public List<EventReservationDTO> getReservationsByUserId(Long id) {
         return null;
     }
 }

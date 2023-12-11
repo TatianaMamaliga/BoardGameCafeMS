@@ -1,4 +1,4 @@
-package com.boardcafe.ms.models.entities;
+package com.boardcafe.ms.models.entities.enums;
 
 public enum GameTableStatus {
     AVAILABLE,

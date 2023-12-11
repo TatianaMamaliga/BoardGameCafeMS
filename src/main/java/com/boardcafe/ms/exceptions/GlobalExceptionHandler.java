@@ -18,4 +18,15 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(TableNotAvailableException.class)
+    public ResponseEntity<ApiErrorResponse> handleTableNotAvailableException(TableNotAvailableException exception, WebRequest request) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONTINUE.getReasonPhrase(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.CONFLICT);
+    }
 }

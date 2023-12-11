@@ -1,6 +1,5 @@
 package com.boardcafe.ms.models.dtos;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -23,6 +22,6 @@ public class UserDTO implements Serializable {
     private String email;
     @NotNull(message = "Phone number cannot be null")
     private String phoneNumber;
-    private List<GameDTO> gameDTOS;
-    private List<ReservationDTO> reservationDTOS;
+    private List<GameDTO> games;
+    private List<EventReservationDTO> eventReservations;
 }
