@@ -23,7 +23,29 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleTableNotAvailableException(TableNotAvailableException exception, WebRequest request) {
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
                 HttpStatus.CONFLICT.value(),
-                HttpStatus.CONTINUE.getReasonPhrase(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EventCapacityNotAvailable.class)
+    public ResponseEntity<ApiErrorResponse> handleEventCapacityNotAvailable(EventCapacityNotAvailable exception, WebRequest request) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EventTimeSlotNotAvailable.class)
+    public ResponseEntity<ApiErrorResponse> handleEventTimeSlotNotAvailable(EventTimeSlotNotAvailable exception, WebRequest request) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
                 exception.getMessage(),
                 request.getDescription(false)
         );

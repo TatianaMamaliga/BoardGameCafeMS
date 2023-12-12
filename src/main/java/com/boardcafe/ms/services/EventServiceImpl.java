@@ -1,12 +1,14 @@
 package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
+import com.boardcafe.ms.exceptions.EventTimeSlotNotAvailable;
 import com.boardcafe.ms.models.dtos.EventDTO;
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.entities.Event;
 import com.boardcafe.ms.models.entities.EventReservation;
 import com.boardcafe.ms.repositories.EventRepository;
 import com.boardcafe.ms.repositories.EventReservationRepository;
+import com.boardcafe.ms.services.util.EventReservationConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,17 +28,17 @@ import java.util.Set;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
-    private final EventReservationRepository eventReservationRepository;
     private final ObjectMapper objectMapper;
-    //    private final ReservationService reservationService;
-    private final EventReservationServiceImpl reservationService;
+    private final EventReservationConverter eventReservationConverter;
 
     @Override
     public EventDTO createEvent(EventDTO eventDTO) {
         Event eventEntity = objectMapper.convertValue(eventDTO, Event.class);
+        if (!isTimeSlotAvailable(eventEntity)) {
+            throw new EventTimeSlotNotAvailable("The event is overlapping with another event");
+        }
         Event savedEventEntity = eventRepository.save(eventEntity);
-        EventDTO eventDTOResponse = objectMapper.convertValue(savedEventEntity, EventDTO.class);
-        return eventDTOResponse;
+        return objectMapper.convertValue(savedEventEntity, EventDTO.class);
     }
 
     @Override
@@ -82,9 +85,30 @@ public class EventServiceImpl implements EventService {
     private Set<EventReservationDTO> getReservationDTOs(Set<EventReservation> eventReservations) {
         Set<EventReservationDTO> eventReservationDTOSet = new HashSet<>();
         for (EventReservation eventReservation : eventReservations) {
-            EventReservationDTO eventReservationDTO = objectMapper.convertValue(eventReservation, EventReservationDTO.class);
+            EventReservationDTO eventReservationDTO = eventReservationConverter.EntityToDTO(eventReservation);
             eventReservationDTOSet.add(eventReservationDTO);
         }
         return eventReservationDTOSet;
+    }
+
+    private boolean isTimeSlotAvailable(Event event) {
+        List<Event> events = eventRepository.findAll();
+        LocalTime newEventStartTime = event.getStartTime();
+        LocalTime newEventEndTime = event.getEndTime();
+
+        for (Event eventEntity : events) {
+            LocalTime existingEventStartTime = eventEntity.getStartTime();
+            LocalTime existingEventEndTime = eventEntity.getEndTime();
+
+            if (event.getDate().equals(eventEntity.getDate())) {
+                if ((newEventStartTime.isAfter(existingEventStartTime) && newEventStartTime.isBefore(existingEventEndTime)) ||
+                        (newEventEndTime.isAfter(existingEventStartTime) && newEventEndTime.isBefore(existingEventEndTime)) ||
+                        (newEventStartTime.isBefore(existingEventStartTime) && newEventEndTime.isAfter(existingEventEndTime)) ||
+                        (newEventStartTime.equals(existingEventStartTime) || newEventEndTime.equals(existingEventEndTime))) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

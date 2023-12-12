@@ -1,6 +1,7 @@
 package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
+import com.boardcafe.ms.exceptions.EventCapacityNotAvailable;
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
 import com.boardcafe.ms.models.entities.Event;
@@ -36,6 +37,13 @@ public class EventReservationServiceImpl implements EventReservationService {
     public EventReservationDTO createReservation(EventReservationDTO eventReservationDTO, Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with given id: " + eventId));
+        if (!hasCapacity(event)) {
+            throw new EventCapacityNotAvailable("There are no available spots for this event.");
+        }
+
+        event.setCapacity(event.getCapacity() - 1);
+        eventRepository.save(event);
+
         User user = userRepository.findById(eventReservationDTO.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with given id: " + eventId));
 
@@ -65,7 +73,7 @@ public class EventReservationServiceImpl implements EventReservationService {
     public EventReservationDTO getReservationById(Long id) {
         EventReservation eventReservation = eventReservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Event reservation not found with given id: " + id));
-        return eventReservationConverter.EntityToDto(eventReservation);
+        return eventReservationConverter.EntityToDTO(eventReservation);
     }
 
     @Override
@@ -110,7 +118,7 @@ public class EventReservationServiceImpl implements EventReservationService {
             throw new EntityNotFoundException("Oops. There are no reservations yet.");
         }
         return allEventReservations.stream()
-                .map(eventReservationConverter::EntityToDto)
+                .map(eventReservationConverter::EntityToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -119,5 +127,9 @@ public class EventReservationServiceImpl implements EventReservationService {
         EventReservation eventReservation = eventReservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found with id: " + id));
         eventReservationRepository.delete(eventReservation);
+    }
+
+    private boolean hasCapacity(Event event) {
+        return event.getCapacity() > 0;
     }
 }
