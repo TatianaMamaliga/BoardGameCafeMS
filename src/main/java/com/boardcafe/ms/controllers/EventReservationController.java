@@ -49,7 +49,6 @@ public class EventReservationController {
         } else if (Objects.equals(status, "complete")) {
             response = "completed";
         }
-
         return ResponseEntity.ok("Event reservation successfully " + response);
     }
 

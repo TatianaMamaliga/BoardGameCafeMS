@@ -2,7 +2,6 @@ package com.boardcafe.ms.services.util;
 
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
-import com.boardcafe.ms.models.entities.Event;
 import com.boardcafe.ms.models.entities.EventReservation;
 import com.boardcafe.ms.models.entities.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,7 @@ public class EventReservationConverter {
     private EventReservationConverter() {
     }
 
-    public EventReservationDTO EntityToDto(EventReservation reservation) {
+    public EventReservationDTO EntityToDTO(EventReservation reservation) {
         EventReservationDTO reservationDTO = new EventReservationDTO();
         reservationDTO.setId(reservation.getId());
         reservationDTO.setDate(reservation.getDate());
