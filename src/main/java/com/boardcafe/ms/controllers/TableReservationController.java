@@ -5,6 +5,7 @@ import com.boardcafe.ms.services.TableReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -31,5 +32,4 @@ public class TableReservationController {
     public ResponseEntity<List<TableReservationDTO>> getAllTableReservations() {
         return ResponseEntity.ok(tableReservationService.getAllTableReservations());
     }
-
 }
