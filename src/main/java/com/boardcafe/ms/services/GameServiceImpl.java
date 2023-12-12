@@ -50,6 +50,14 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public List<GameDTO> findGamesByCategoryAndMaxPlayersAndPrice(String category, int maxPlayers, double price) {
+        List<Game> games = gameRepository.findGamesByCategoryAndMaxPlayersAndPrice(category, maxPlayers, price);
+        List<GameDTO> gameDTOList = new ArrayList<>();
+        games.forEach(game -> gameDTOList.add(objectMapper.convertValue(game, GameDTO.class)));
+        return gameDTOList;
+    }
+
+    @Override
     public GameDTO updateGame(Long id, GameDTO gameDTO) {
         return null;
     }

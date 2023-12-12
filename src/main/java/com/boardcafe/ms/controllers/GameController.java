@@ -33,6 +33,14 @@ public class GameController {
         }
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<GameDTO>> findGamesByCategoryAndMaxPlayerAndPrice(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Integer maxPlayers,
+            @RequestParam(required = false) Double price) {
+        return ResponseEntity.ok(gameService.findGamesByCategoryAndMaxPlayersAndPrice(category, maxPlayers, price));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<GameDTO> getGameById(@PathVariable Long id) {
         return ResponseEntity.ok(gameService.getGameById(id));
