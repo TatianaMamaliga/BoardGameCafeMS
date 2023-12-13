@@ -3,6 +3,7 @@ package com.boardcafe.ms.controllers;
 import com.boardcafe.ms.models.dtos.GameDTO;
 import com.boardcafe.ms.services.GameService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class GameController {
 
     @PostMapping
     public ResponseEntity<GameDTO> createGame(@RequestBody @Valid GameDTO gameDTO) {
-        return ResponseEntity.ok(gameService.createGame(gameDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(gameService.createGame(gameDTO));
     }
 
     @GetMapping
@@ -49,6 +50,6 @@ public class GameController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteGameById(@PathVariable long id) {
         gameService.deleteGameById(id);
-        return ResponseEntity.ok("Successfully deleted game with id: " + id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfully deleted game with id: " + id);
     }
 }

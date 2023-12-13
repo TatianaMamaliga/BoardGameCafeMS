@@ -1,13 +1,12 @@
 package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
-import com.boardcafe.ms.exceptions.EventTimeSlotNotAvailable;
+import com.boardcafe.ms.exceptions.EventTimeSlotNotAvailableException;
 import com.boardcafe.ms.models.dtos.EventDTO;
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.entities.Event;
 import com.boardcafe.ms.models.entities.EventReservation;
 import com.boardcafe.ms.repositories.EventRepository;
-import com.boardcafe.ms.repositories.EventReservationRepository;
 import com.boardcafe.ms.services.util.EventReservationConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,7 @@ public class EventServiceImpl implements EventService {
     public EventDTO createEvent(EventDTO eventDTO) {
         Event eventEntity = objectMapper.convertValue(eventDTO, Event.class);
         if (!isTimeSlotAvailable(eventEntity)) {
-            throw new EventTimeSlotNotAvailable("The event is overlapping with another event");
+            throw new EventTimeSlotNotAvailableException("The event is overlapping with another event");
         }
         Event savedEventEntity = eventRepository.save(eventEntity);
         return objectMapper.convertValue(savedEventEntity, EventDTO.class);

@@ -1,6 +1,7 @@
 package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
+import com.boardcafe.ms.exceptions.UserAlreadyExistsException;
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.dtos.UserDTO;
 import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
@@ -32,10 +33,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new UserAlreadyExistsException("User already exists");
+        }
         User userEntity = objectMapper.convertValue(userDTO, User.class);
         User savedUserEntity = userRepository.save(userEntity);
-        UserDTO userDTOResponse = objectMapper.convertValue(savedUserEntity, UserDTO.class);
-        return userDTOResponse;
+        return objectMapper.convertValue(savedUserEntity, UserDTO.class);
     }
 
     @Override
@@ -53,7 +56,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
-        
+
         List<EventReservation> reservations = user.getEventReservations();
         List<EventReservationDTO> reservationDTOs = new ArrayList<>();
         reservations.forEach(reservation -> reservationDTOs.add(eventReservationConverter.EntityToDTO(reservation)));

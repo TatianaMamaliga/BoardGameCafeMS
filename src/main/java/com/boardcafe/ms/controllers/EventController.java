@@ -3,6 +3,7 @@ package com.boardcafe.ms.controllers;
 import com.boardcafe.ms.models.dtos.EventDTO;
 import com.boardcafe.ms.services.EventService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity<EventDTO> createEvent(@RequestBody @Valid EventDTO eventDTO) {
-        return ResponseEntity.ok(eventService.createEvent(eventDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.createEvent(eventDTO));
     }
 
     @GetMapping
@@ -46,6 +47,6 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEventById(@PathVariable long id) {
         eventService.deleteEventById(id);
-        return ResponseEntity.ok("Successfully deleted event with id: " + id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfully deleted event with id: " + id);
     }
 }

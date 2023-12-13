@@ -2,6 +2,7 @@ package com.boardcafe.ms.controllers;
 
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.services.EventReservationService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class EventReservationController {
 
     @PostMapping("/{id}/reservations")
     public ResponseEntity<EventReservationDTO> createReservation(@RequestBody EventReservationDTO eventReservationDTO, @PathVariable long id) {
-        return ResponseEntity.ok(eventReservationService.createReservation(eventReservationDTO, id));
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventReservationService.createReservation(eventReservationDTO, id));
     }
 
     @GetMapping("/reservations/{id}")
@@ -55,6 +56,6 @@ public class EventReservationController {
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<String> deleteReservation(@PathVariable long id) {
         eventReservationService.deleteReservationById(id);
-        return ResponseEntity.ok("Successfully deleted reservation with id: " + id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfully deleted reservation with id: " + id);
     }
 }

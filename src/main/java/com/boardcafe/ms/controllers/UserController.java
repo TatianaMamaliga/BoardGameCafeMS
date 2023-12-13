@@ -5,6 +5,7 @@ import com.boardcafe.ms.models.dtos.UserDTO;
 import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
 import com.boardcafe.ms.services.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserDTO userDTO) {
-        return ResponseEntity.ok(userService.createUser(userDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userDTO));
     }
 
     @GetMapping
@@ -43,6 +44,6 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUserById(@PathVariable long id) {
         userService.deleteUserById(id);
-        return ResponseEntity.ok("Successfully deleted user with id: " + id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfully deleted user with id: " + id);
     }
 }
