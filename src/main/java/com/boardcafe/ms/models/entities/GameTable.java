@@ -24,9 +24,9 @@ public class GameTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(name = "capacity")
     private Integer capacity;
-    @Column
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private GameTableStatus status;
     @Embedded

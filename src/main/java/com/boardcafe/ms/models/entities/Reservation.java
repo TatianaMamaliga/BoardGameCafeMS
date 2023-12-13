@@ -17,17 +17,17 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @MappedSuperclass
 public abstract class Reservation {
-    @Column
+    @Column(name = "date")
     private LocalDate date;
-    @Column
+    @Column(name = "start_time")
     private LocalTime startTime;
-    @Column
+    @Column(name = "end_time")
     private LocalTime endTime;
-    @Column
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
-    @Column
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    @Column
+    @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
 }
