@@ -21,7 +21,7 @@ public class TableReservation extends Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "attendees")
     private Integer attendees;
 
     @Builder

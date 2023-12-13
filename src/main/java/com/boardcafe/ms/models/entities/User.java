@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,13 +23,13 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(name = "name")
     private String name;
     @Column(name = "birth_date")
     private LocalDate birthDate;
-    @Column
+    @Column(name = "email", unique = true)
     private String email;
-    @Column
+    @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
     @ManyToMany
@@ -39,5 +41,5 @@ public class User {
     private Set<Game> games = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<EventReservation> eventReservations = new HashSet<>();
+    private List<EventReservation> eventReservations = new LinkedList<>();
 }

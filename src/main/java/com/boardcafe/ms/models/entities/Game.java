@@ -20,19 +20,19 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(name = "title", unique = true) // game title must be unique
     private String title;
-    @Column
+    @Column(name = "description")
     private String description;
-    @Column
+    @Column(name = "category")
     private String category;
-    @Column
+    @Column(name = "quantity")
     private Integer quantity;
-    @Column
-    private Long price;
-    @Column
+    @Column(name = "price")
+    private Double price;
+    @Column(name = "min_players")
     private Integer minPlayers;
-    @Column
+    @Column(name = "max_players")
     private Integer maxPlayers;
 
     @ManyToMany(mappedBy = "games")

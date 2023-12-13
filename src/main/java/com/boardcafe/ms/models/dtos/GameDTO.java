@@ -32,7 +32,7 @@ public class GameDTO implements Serializable {
 
     @NotNull(message = "Price cannot be null")
     @PositiveOrZero(message = "Price must be a positive number or zero")
-    private Integer price;
+    private Double price;
 
     @NotNull(message = "Minimum players cannot be null")
     @Min(value = 1, message = "Minimum players must be at least 1")

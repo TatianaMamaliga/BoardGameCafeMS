@@ -3,8 +3,11 @@ package com.boardcafe.ms.services;
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.dtos.UserDTO;
+import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
+import com.boardcafe.ms.models.entities.EventReservation;
 import com.boardcafe.ms.models.entities.User;
 import com.boardcafe.ms.repositories.UserRepository;
+import com.boardcafe.ms.services.util.EventReservationConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.hibernate.internal.util.collections.ArrayHelper.forEach;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +28,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final EventReservationConverter eventReservationConverter;
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
@@ -45,7 +53,13 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        
+        List<EventReservation> reservations = user.getEventReservations();
+        List<EventReservationDTO> reservationDTOs = new ArrayList<>();
+        reservations.forEach(reservation -> reservationDTOs.add(eventReservationConverter.EntityToDTO(reservation)));
+
         UserDTO userDTOResponse = objectMapper.convertValue(user, UserDTO.class);
+        userDTOResponse.setEventReservations(reservationDTOs);
         return userDTOResponse;
     }
 
@@ -58,11 +72,15 @@ public class UserServiceImpl implements UserService {
         } catch (EntityNotFoundException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage(), exception);
         }
-
     }
 
     @Override
     public List<EventReservationDTO> getReservationsByUserId(Long id) {
-        return null;
+        List<EventReservationDTO> eventReservationDTOs = new LinkedList<>();
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with given id: " + id));
+        List<EventReservation> eventReservations = user.getEventReservations();
+        eventReservations.forEach(eventReservation -> eventReservationDTOs.add(eventReservationConverter.EntityToDTO(eventReservation)));
+        return eventReservationDTOs;
     }
 }

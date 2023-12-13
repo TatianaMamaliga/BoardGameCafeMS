@@ -51,4 +51,15 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(UserAlreadyRegisteredToEvent.class)
+    public ResponseEntity<ApiErrorResponse> handleUserAlreadyRegisteredToEvent(UserAlreadyRegisteredToEvent exception, WebRequest request) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.CONFLICT);
+    }
 }

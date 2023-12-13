@@ -23,15 +23,15 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(name = "title")
     private String title;
-    @Column
+    @Column(name = "date")
     private LocalDate date;
-    @Column
+    @Column(name = "start_time")
     private LocalTime startTime;
-    @Column
+    @Column(name = "end_time")
     private LocalTime endTime;
-    @Column
+    @Column(name = "capacity")
     private Integer capacity;
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)

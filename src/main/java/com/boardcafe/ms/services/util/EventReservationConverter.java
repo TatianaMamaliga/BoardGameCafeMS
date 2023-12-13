@@ -20,7 +20,7 @@ public class EventReservationConverter {
         reservationDTO.setId(reservation.getId());
         reservationDTO.setDate(reservation.getDate());
         reservationDTO.setStartTime(reservation.getStartTime());
-        reservationDTO.setEndTime(reservation.getStartTime());
+        reservationDTO.setEndTime(reservation.getEndTime());
 
         ReservationStatusDTO reservationStatusDTO = objectMapper.convertValue(reservation.getStatus(), ReservationStatusDTO.class);
         reservationDTO.setReservationStatus(reservationStatusDTO);

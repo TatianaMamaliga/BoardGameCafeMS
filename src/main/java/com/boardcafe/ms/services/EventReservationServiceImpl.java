@@ -2,10 +2,12 @@ package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
 import com.boardcafe.ms.exceptions.EventCapacityNotAvailable;
+import com.boardcafe.ms.exceptions.UserAlreadyRegisteredToEvent;
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
 import com.boardcafe.ms.models.entities.Event;
 import com.boardcafe.ms.models.entities.EventReservation;
+import com.boardcafe.ms.models.entities.Reservation;
 import com.boardcafe.ms.models.entities.User;
 import com.boardcafe.ms.models.entities.enums.ReservationStatus;
 import com.boardcafe.ms.repositories.EventRepository;
@@ -39,6 +41,10 @@ public class EventReservationServiceImpl implements EventReservationService {
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with given id: " + eventId));
         if (!hasCapacity(event)) {
             throw new EventCapacityNotAvailable("There are no available spots for this event.");
+        }
+
+        if (isUserAlreadyRegistered(eventId, eventReservationDTO.getUserId())) {
+            throw new UserAlreadyRegisteredToEvent("User is already registered to the event");
         }
 
         event.setCapacity(event.getCapacity() - 1);
@@ -131,5 +137,14 @@ public class EventReservationServiceImpl implements EventReservationService {
 
     private boolean hasCapacity(Event event) {
         return event.getCapacity() > 0;
+    }
+
+    private boolean isUserAlreadyRegistered(long userId, long eventId) {
+        List<EventReservation> eventReservations = eventReservationRepository.findAll()
+                .stream()
+                .filter(eventReservation -> eventReservation.getEvent().getId().equals(eventId))
+                .collect(Collectors.toList());
+        return eventReservations.stream()
+                .anyMatch(eventReservation -> eventReservation.getUser().getId().equals(userId));
     }
 }

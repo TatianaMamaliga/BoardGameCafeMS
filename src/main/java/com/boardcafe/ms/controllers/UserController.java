@@ -1,6 +1,8 @@
 package com.boardcafe.ms.controllers;
 
+import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.dtos.UserDTO;
+import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
 import com.boardcafe.ms.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,11 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable long id) {
         return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    @GetMapping("/{id}/event-reservations")
+    public ResponseEntity<List<EventReservationDTO>> getEventReservationsByUserId(@PathVariable long id) {
+        return ResponseEntity.ok(userService.getReservationsByUserId(id));
     }
 
     @DeleteMapping("/{id}")
