@@ -2,6 +2,7 @@ package com.boardcafe.ms.controllers;
 
 import com.boardcafe.ms.models.dtos.GameTableDTO;
 import com.boardcafe.ms.services.GameTableService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class GameTableController {
 
     @PostMapping
     public ResponseEntity<GameTableDTO> createTable(@RequestBody GameTableDTO gameTableDTO) {
-        return ResponseEntity.ok(gameTableService.createTable(gameTableDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(gameTableService.createTable(gameTableDTO));
     }
 
     @GetMapping
