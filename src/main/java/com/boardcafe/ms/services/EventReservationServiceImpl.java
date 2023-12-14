@@ -2,6 +2,7 @@ package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
 import com.boardcafe.ms.exceptions.EventCapacityNotAvailableException;
+import com.boardcafe.ms.exceptions.StartTimeAndEndTimeAreInvalidException;
 import com.boardcafe.ms.exceptions.UserAlreadyRegisteredToEventException;
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 

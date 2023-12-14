@@ -1,6 +1,7 @@
 package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
+import com.boardcafe.ms.exceptions.UserAgeIsInvalidException;
 import com.boardcafe.ms.exceptions.UserAlreadyExistsException;
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
 import com.boardcafe.ms.models.dtos.UserDTO;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
+        if (!isUserAgeValid(userDTO.getBirthDate())) {
+            throw new UserAgeIsInvalidException("User must be at least 16");
+        }
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             throw new UserAlreadyExistsException("User already exists");
         }
@@ -85,5 +90,9 @@ public class UserServiceImpl implements UserService {
         List<EventReservation> eventReservations = user.getEventReservations();
         eventReservations.forEach(eventReservation -> eventReservationDTOs.add(eventReservationConverter.EntityToDTO(eventReservation)));
         return eventReservationDTOs;
+    }
+
+    private boolean isUserAgeValid(LocalDate birthDate) {
+        return birthDate.isBefore(LocalDate.now().minusYears(16));
     }
 }

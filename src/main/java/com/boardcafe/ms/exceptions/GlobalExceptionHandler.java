@@ -73,4 +73,26 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(StartTimeAndEndTimeAreInvalidException.class)
+    public ResponseEntity<ApiErrorResponse> handleStartAndEndTimeAreInvalid(StartTimeAndEndTimeAreInvalidException exception, WebRequest request) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserAgeIsInvalidException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserAgeIsInvalid(UserAgeIsInvalidException exception, WebRequest request) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
 }
