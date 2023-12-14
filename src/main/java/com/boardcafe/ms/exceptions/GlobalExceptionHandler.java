@@ -95,4 +95,15 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(GameIsAlreadyInFavoritesException.class)
+    public ResponseEntity<ApiErrorResponse> handleGameIsAlreadyInFavorites(GameIsAlreadyInFavoritesException exception, WebRequest request) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.CONFLICT);
+    }
 }

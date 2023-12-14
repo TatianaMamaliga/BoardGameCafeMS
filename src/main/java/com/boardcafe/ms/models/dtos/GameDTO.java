@@ -41,7 +41,4 @@ public class GameDTO implements Serializable {
     @NotNull(message = "Maximum players cannot be null")
     @Min(value = 1, message = "Maximum players must be at least 1")
     private Integer maxPlayers;
-
-    private Set<GameTableDTO> gameTables;
-    private Set<UserDTO> users;
 }

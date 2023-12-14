@@ -109,7 +109,7 @@ public class TableReservationServiceImpl implements TableReservationService {
             throw new EntityNotFoundException("Oops. There are no reservations here.");
         }
         return reservations.stream()
-                .map(tableReservationConverter::EntityToDTO)
+                .map(TableReservationConverter::EntityToDTO)
                 .collect(Collectors.toList());
     }
 

@@ -1,15 +1,19 @@
 package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
+import com.boardcafe.ms.exceptions.GameIsAlreadyInFavoritesException;
 import com.boardcafe.ms.exceptions.UserAgeIsInvalidException;
 import com.boardcafe.ms.exceptions.UserAlreadyExistsException;
-import com.boardcafe.ms.models.dtos.EventReservationDTO;
-import com.boardcafe.ms.models.dtos.UserDTO;
+import com.boardcafe.ms.models.dtos.*;
 import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
 import com.boardcafe.ms.models.entities.EventReservation;
+import com.boardcafe.ms.models.entities.Game;
+import com.boardcafe.ms.models.entities.TableReservation;
 import com.boardcafe.ms.models.entities.User;
+import com.boardcafe.ms.repositories.GameRepository;
 import com.boardcafe.ms.repositories.UserRepository;
 import com.boardcafe.ms.services.util.EventReservationConverter;
+import com.boardcafe.ms.services.util.TableReservationConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.hibernate.internal.util.collections.ArrayHelper.forEach;
@@ -32,6 +34,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
     private final EventReservationConverter eventReservationConverter;
+    private final GameRepository gameRepository;
+    private final TableReservationConverter tableReservationConverter;
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
@@ -53,7 +57,7 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException("Oops. There are no users in the database.");
         }
         return allUsers.stream()
-                .map(user -> objectMapper.convertValue(user, UserDTO.class))
+                .map(this::getUserDTOResponse)
                 .collect(Collectors.toList());
     }
 
@@ -62,12 +66,18 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
+        return getUserDTOResponse(user);
+    }
+
+    private UserDTO getUserDTOResponse(User user) {
         List<EventReservation> reservations = user.getEventReservations();
         List<EventReservationDTO> reservationDTOs = new ArrayList<>();
+        List<FavoriteGameDTO> favoriteGameDTOS = convertGameEntityToDTO(user.getGames());
         reservations.forEach(reservation -> reservationDTOs.add(eventReservationConverter.EntityToDTO(reservation)));
 
         UserDTO userDTOResponse = objectMapper.convertValue(user, UserDTO.class);
         userDTOResponse.setEventReservations(reservationDTOs);
+        userDTOResponse.setGames(favoriteGameDTOS);
         return userDTOResponse;
     }
 
@@ -83,7 +93,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<EventReservationDTO> getReservationsByUserId(Long id) {
+    public void addGameToFavorites(Long userId, Long gameId) {
+        Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new EntityNotFoundException("Game not found with the given id: " + gameId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with the given id: " + userId));
+
+        if (isGameAlreadyInFavorites(game, user)) {
+            throw new GameIsAlreadyInFavoritesException("Selected game is already in your favorites list.");
+        }
+        user.getGames().add(game);
+        userRepository.save(user);
+        game.getUsers().add(user);
+        gameRepository.save(game);
+    }
+
+    @Override
+    public List<EventReservationDTO> getEventReservationsByUserId(Long id) {
         List<EventReservationDTO> eventReservationDTOs = new LinkedList<>();
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with given id: " + id));
@@ -92,7 +118,37 @@ public class UserServiceImpl implements UserService {
         return eventReservationDTOs;
     }
 
+    @Override
+    public List<TableReservationDTO> getTableReservationsByUserId(Long id) {
+        List<TableReservationDTO> tableReservationDTOS = new LinkedList<>();
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with given id: " + id));
+        List<TableReservation> tableReservations = user.getTableReservations();
+        tableReservations.forEach(tableReservation -> tableReservationDTOS.add(TableReservationConverter.EntityToDTO(tableReservation)));
+        return tableReservationDTOS;
+    }
+
     private boolean isUserAgeValid(LocalDate birthDate) {
         return birthDate.isBefore(LocalDate.now().minusYears(16));
+    }
+
+    private boolean isGameAlreadyInFavorites(Game game, User user) {
+        Set<Game> games = user.getGames();
+        return games.contains(game);
+    }
+
+    private List<FavoriteGameDTO> convertGameEntityToDTO(Set<Game> games) {
+        List<FavoriteGameDTO> gameDTOS = new ArrayList<>();
+        FavoriteGameDTO gameDTO = new FavoriteGameDTO();
+        games.forEach(game -> {
+            gameDTO.setId(game.getId());
+            gameDTO.setTitle(game.getTitle());
+            gameDTO.setCategory(game.getCategory());
+            gameDTO.setDescription(game.getDescription());
+            gameDTO.setMinPlayers(game.getMinPlayers());
+            gameDTO.setMaxPlayers(game.getMaxPlayers());
+            gameDTOS.add(gameDTO);
+        });
+        return gameDTOS;
     }
 }

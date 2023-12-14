@@ -1,5 +1,6 @@
 package com.boardcafe.ms.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -42,4 +43,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<EventReservation> eventReservations = new LinkedList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<TableReservation> tableReservations = new LinkedList<>();
 }

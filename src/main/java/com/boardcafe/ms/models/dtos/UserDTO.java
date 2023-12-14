@@ -22,6 +22,6 @@ public class UserDTO implements Serializable {
     private String email;
     @NotNull(message = "Phone number cannot be null")
     private String phoneNumber;
-    private List<GameDTO> games;
+    private List<FavoriteGameDTO> games;
     private List<EventReservationDTO> eventReservations;
 }
