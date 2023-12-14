@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class UserTestUtil {
 
-    public UserTestUtil() {
+    private UserTestUtil() {
     }
 
     public static UserDTO createUserDTO() {
@@ -26,5 +26,16 @@ public class UserTestUtil {
         user.setEmail("jane@email.com");
         user.setPhoneNumber("0712345678");
         return user;
+    }
+
+    public static String getUserJson() {
+        return """
+                {
+                    "name": "Jane Doe",
+                    "birthDate": "2000-01-01",
+                    "email": "jame@email.com",
+                    "phoneNumber": "0712345678"
+                }
+                """;
     }
 }
