@@ -1,6 +1,7 @@
 package com.boardcafe.ms.services;
 
 import com.boardcafe.ms.exceptions.EntityNotFoundException;
+import com.boardcafe.ms.exceptions.StartTimeAndEndTimeAreInvalidException;
 import com.boardcafe.ms.exceptions.TableNotAvailableException;
 import com.boardcafe.ms.models.dtos.TableReservationDTO;
 import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
@@ -36,6 +37,10 @@ public class TableReservationServiceImpl implements TableReservationService {
 
     @Override
     public TableReservationDTO createTableReservation(TableReservationDTO tableReservationDTO, Long tableId) {
+        if (!areStartTimeAndEndTimeValid(tableReservationDTO.getStartTime(), tableReservationDTO.getEndTime())) {
+            throw new StartTimeAndEndTimeAreInvalidException("Start time must be before end time.");
+        }
+
         GameTable table = gameTableRepository.findById(tableId)
                 .orElseThrow(() -> new EntityNotFoundException("Table not found with id: " + tableId));
         Long userId = tableReservationDTO.getUserId();
@@ -106,5 +111,9 @@ public class TableReservationServiceImpl implements TableReservationService {
         return reservations.stream()
                 .map(tableReservationConverter::EntityToDTO)
                 .collect(Collectors.toList());
+    }
+
+    private boolean areStartTimeAndEndTimeValid(LocalTime startTime, LocalTime endTime) {
+        return startTime.isBefore(endTime.minusHours(1));
     }
 }
