@@ -1,8 +1,8 @@
 package com.boardcafe.ms.controllers;
 
 import com.boardcafe.ms.models.dtos.EventReservationDTO;
+import com.boardcafe.ms.models.dtos.TableReservationDTO;
 import com.boardcafe.ms.models.dtos.UserDTO;
-import com.boardcafe.ms.models.dtos.enums.ReservationStatusDTO;
 import com.boardcafe.ms.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -36,9 +36,20 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
+    @PostMapping("/{id}/games/{gameId}")
+    public ResponseEntity<String> addGameToFavorites(@PathVariable long id, @PathVariable long gameId) {
+        userService.addGameToFavorites(id, gameId);
+        return ResponseEntity.ok("Game successfully added to favorites");
+    }
+
     @GetMapping("/{id}/event-reservations")
     public ResponseEntity<List<EventReservationDTO>> getEventReservationsByUserId(@PathVariable long id) {
-        return ResponseEntity.ok(userService.getReservationsByUserId(id));
+        return ResponseEntity.ok(userService.getEventReservationsByUserId(id));
+    }
+
+    @GetMapping("/{id}/table-reservations")
+    public ResponseEntity<List<TableReservationDTO>> getTableReservationsByUserId(@PathVariable long id) {
+        return ResponseEntity.ok(userService.getTableReservationsByUserId(id));
     }
 
     @DeleteMapping("/{id}")

@@ -51,7 +51,7 @@ public class GameTableServiceImpl implements GameTableService {
 
         List<TableReservation> reservations = gameTable.getTableReservations();
         List<TableReservationDTO> reservationDTOS = reservations.stream()
-                .map(tableReservationConverter::EntityToDTO)
+                .map(TableReservationConverter::EntityToDTO)
                 .collect(Collectors.toList());
 
         GameTableDTO gameTableDTOResponse = objectMapper.convertValue(gameTable, GameTableDTO.class);

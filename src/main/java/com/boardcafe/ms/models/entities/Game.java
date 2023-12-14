@@ -1,5 +1,6 @@
 package com.boardcafe.ms.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -39,5 +40,6 @@ public class Game {
     private Set<GameTable> gameTables = new HashSet<>();
 
     @ManyToMany(mappedBy = "games")
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 }

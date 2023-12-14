@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class TableReservationConverter {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private TableReservationConverter() {
     }
 
-    public TableReservationDTO EntityToDTO(TableReservation reservation) {
+    public static TableReservationDTO EntityToDTO(TableReservation reservation) {
         TableReservationDTO reservationDTO = new TableReservationDTO();
         reservationDTO.setId(reservation.getId());
         reservationDTO.setDate(reservation.getDate());
@@ -29,14 +29,5 @@ public class TableReservationConverter {
         User user = reservation.getUser();
         reservationDTO.setUserId(user.getId());
         return reservationDTO;
-    }
-
-    public static TableReservation DTOToEntity(TableReservationDTO reservationDTO) {
-        TableReservation reservation = new TableReservation();
-        reservation.setDate(reservationDTO.getDate());
-        reservation.setStartTime(reservationDTO.getStartTime());
-        reservation.setEndTime(reservationDTO.getEndTime());
-        reservation.setAttendees(reservationDTO.getAttendees());
-        return reservation;
     }
 }
