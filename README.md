@@ -1,8 +1,7 @@
 ## Board Game Café Management System
 
-An event reservation system for board game cafés to manage table bookings, game library inventories, and special game
-night
-events.
+An reservation system for board game cafés to manage table bookings, game library inventories, and special game
+night events.
 
 #### The project uses the following tech stack:
 
