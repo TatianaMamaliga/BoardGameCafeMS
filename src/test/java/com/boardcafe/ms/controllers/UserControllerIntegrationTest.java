@@ -33,16 +33,9 @@ class UserControllerIntegrationTest {
     private UserService userService;
 
     @Test
-    @DisplayName("When adding a new user, return status 201.")
+    @DisplayName("When adding a new user, return status code 201.")
     void whenCreateUserTest() throws Exception {
-        String userJson = """
-                {
-                    "name": "Jane Doe",
-                    "birthDate": "2000-01-01",
-                    "email": "jame@email.com",
-                    "phoneNumber": "0712345678"
-                }
-                """;
+        String userJson = UserTestUtil.getUserJson();
 
         UserDTO mockUserDTO = UserTestUtil.createUserDTO();
         BDDMockito.given(userService.createUser(ArgumentMatchers.any(UserDTO.class))).willReturn(mockUserDTO);
